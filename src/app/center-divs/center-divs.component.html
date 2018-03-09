@@ -1,0 +1,15 @@
+<p>
+  Page Height: {{pageHeight}} Page Width: {{pageWidth}}
+
+</p>
+<div *ngFor="let divElement of divArray; let i = index" class="i box"
+ [style.top.px]="divElement.y"
+  [style.left.px]="divElement.x" [style.width.px]="divWidth" [style.heigth.px]="divHeigth"
+  >
+  <p style="padding-left: 20%">
+    width: {{divWidth}}<br>
+    height: {{divHeigth}}<br>
+    x: {{divElement.x}}
+    <br> y: {{divElement.y}}
+  </p>
+</div>

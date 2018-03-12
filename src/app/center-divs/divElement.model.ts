@@ -1,5 +1,5 @@
 export class DivElement {
-    constructor(private _x: number, private _y: number) {
+    constructor(private _x: number, private _y: number, private _color: string) {
 
     }
 
@@ -17,6 +17,14 @@ export class DivElement {
 
     get y(): number {
         return this._y;
+    }
+
+    get color(): string {
+        return this._color;
+    }
+
+    set color(color: string) {
+        this._color = color
     }
 
     drawDivElement(document: Document) {

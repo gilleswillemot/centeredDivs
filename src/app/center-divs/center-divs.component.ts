@@ -9,31 +9,72 @@ import { DivElement } from './divElement.model';
 export class CenterDivsComponent implements OnInit {
   pageWidth: number;
   pageHeight: number;
-  private origin: any; //center point of page
+  private _origin: any; //center point of page
   private _divArray: DivElement[];
   private _divWidth: number;
-  private _divHeigth: number;
+  private _divHeight: number;
   private _divMargin: number;
+  private _numberOfDivs: number = 1;
+  maxNumberOfDivsPerRow: number;
 
   constructor() { }
   ngOnInit() {
     this.pageWidth = window.screen.width;
     this.pageHeight = window.screen.height;
-    this.origin = {
+   this.maxNumberOfDivsPerRow = Math.floor(this.pageWidth / this._divWidth);
+    this._origin = {
       x: innerWidth / 2,
-      y: innerHeight / 2
+      y: innerHeight / 2,
+      width: 10,
+      height: 10,
+      // xHTML: () => {return this._origin.x - this._origin.width / 2},
+      // yHTML: () => {return this._origin.y - this._origin.height / 2},
     }
+
+    // this._origin.xHTML = function() {
+    //   return 5;
+    // }
+
+    // this._origin.yHTML = function() {
+    //   5;
+    // }
 
     /**
      * div element settings
      */
-    this._divHeigth = 200;
-    this._divWidth = 200;
+    this._divHeight = 100;
+    this._divWidth = 100;
     this._divMargin = 10;
 
-    this._divArray = this.orderDivsInRightPosition(2);
+    let bodyOppervlakte = this.pageWidth * this.pageHeight
+    let maxNumberOfDivsInbody = bodyOppervlakte / (this.divHeight * this.divWidth);
+
+    let interval = setInterval(() => {
+      // let randomNumberOfDivsInCorrectRange = Math.floor(Math.random() * maxNumberOfDivsInbody);
+      // this._numberOfDivs = Math.ceil(Math.random() * 14);
+      
+      this._divArray = this.centerDivs(this._numberOfDivs++)
+    }, 1000);
+
+    // this._divArray = this.centerDivs(15);
     //this.drawDivs(divArray);
   } //END OF ngOnitInit
+
+  // backgroundColor(i: number){
+  //   return Math.floor( i / this.maxNumberOfDivsPerRow) % 2 == 0 ? "blue" : "red";
+  // }
+
+  get numberOfDivs() {
+    return this._numberOfDivs;
+  }
+
+  get originX() {
+    return this._origin.x - this._origin.width / 2;
+  }
+
+  get originY() {
+    return this._origin.y - this._origin.height / 2;
+  }
 
   get divArray(): DivElement[] {
     return this._divArray;
@@ -43,51 +84,52 @@ export class CenterDivsComponent implements OnInit {
     return this._divWidth;
   }
 
-  get divHeigth(): number {
-    return this._divHeigth;
+  get divHeight(): number {
+    return this._divHeight;
   }
 
   get divMargin(): number {
     return this._divMargin;
   }
 
+  get origin() {
+    return this._origin;
+  }
   /**
    * 
    * @param numberOfDivs the number of divs you want to show on the page.
    */
-  orderDivsInRightPosition(numberOfDivs: number): DivElement[] { //alle div in de juiste column en row plaatsen.
-    let arrayOfDivObject = [];
+  centerDivs(numberOfDivs: number): DivElement[] { //alle div in de juiste column en row plaatsen.
+    let divArray = [];
+    
+    if (numberOfDivs > 3 && numberOfDivs < (2 * this.maxNumberOfDivsPerRow)) {//if you want to center a small number of divs properly
+      this.maxNumberOfDivsPerRow = Math.floor(numberOfDivs / 2);
+    }
+    let numberOfRows: number = Math.ceil(numberOfDivs / this.maxNumberOfDivsPerRow);
+    let modulo: number = numberOfDivs % this.maxNumberOfDivsPerRow;
+    let leftoverDivs: number = modulo == 0 ? this.maxNumberOfDivsPerRow : modulo;
+    let yCoordinate: number = this._origin.y - numberOfRows / 2 * this._divHeight;
+    for (let i = 0; i < numberOfRows; i++) {
+      let color = i % 2 == 0 ? "blue" : "red";
+      let remainingColumns: number = i + 1 == numberOfRows ? leftoverDivs : this.maxNumberOfDivsPerRow; //if last row, center the divs, else just normal row.
+      this.centerRowOfDivs(yCoordinate, remainingColumns, divArray, color, i * this.maxNumberOfDivsPerRow);
+      yCoordinate += this._divHeight;
+    }
+    return divArray;
+  }
+
+  centerRowOfDivs(yCoordinate: number, columns: number, divArray: DivElement[], color: string, index?: number) {
     let xCoordinate: number;
-    let yCoordinate: number;
-    let maxNumberOfDivsPerRow: number = this.pageWidth / this._divWidth;
-    let numberOfRows: number = numberOfDivs / maxNumberOfDivsPerRow;
-    let leftoverDivs: number = numberOfDivs % maxNumberOfDivsPerRow;
-    let rows: number;
-
-    for(let i = 0; i < rows; i++){
-
+    if (columns % 2 == 0) { //if the leftovers form an even number.
+      let numberOfDivsLeftToOrigin = columns / 2;
+      xCoordinate = this._origin.x - numberOfDivsLeftToOrigin * this._divWidth;
     }
-
-    for (let i = 0; i < leftoverDivs; i++) {
-      if (leftoverDivs % 2 == 0) { //if the leftovers form an even number.
-        let numberOfDivsLeftToOrigin = leftoverDivs / 2;
-        let x = this.origin.x - numberOfDivsLeftToOrigin * this._divWidth + (i * this.divWidth);
-        let y = this.origin.y - this._divHeigth / 2;
-        arrayOfDivObject[i] = new DivElement(x, y);
-      }
-      else{ //odd number of leftover div elements.
-
-      } 
+    else { //odd number of leftover div elements.
+      xCoordinate = this._origin.x - (this.divWidth / 2) - ((Math.floor(columns / 2) * this.divWidth));
     }
-
-
-    // for (let i = 0; i < numberOfDivs; i++) {
-    //   if (numberOfDivs * this._divWidth < )
-    //     xCoordinate = this.origin.x - this._divWidth / 2;
-    //   yCoordinate = this.origin.y - this._divHeigth / 2;
-    //   arrayOfDivObject[i] = new DivElement(xCoordinate, yCoordinate);
-    // }
-    return arrayOfDivObject;
+    for (let i = 0; i < columns; i++) {
+      divArray[index + i] = new DivElement(xCoordinate + (i * this.divWidth), yCoordinate, color);
+    }
   }
 
   drawDivs(divArray: DivElement[]) {

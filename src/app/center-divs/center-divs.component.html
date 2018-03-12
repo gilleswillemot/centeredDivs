@@ -1,15 +1,19 @@
 <p>
   Page Height: {{pageHeight}} Page Width: {{pageWidth}}
-
+  <br> Number Of Divs: {{numberOfDivs}}
+  {{origin.yHTML}}
 </p>
-<div *ngFor="let divElement of divArray; let i = index" class="i box"
- [style.top.px]="divElement.y"
-  [style.left.px]="divElement.x" [style.width.px]="divWidth" [style.heigth.px]="divHeigth"
-  >
-  <p style="padding-left: 20%">
-    width: {{divWidth}}<br>
-    height: {{divHeigth}}<br>
-    x: {{divElement.x}}
-    <br> y: {{divElement.y}}
-  </p>
+<div id="origin" [style.top.px]="originY" [style.left.px]="originX" [style.height.px]="origin.height"
+ [style.width.px]="origin.width"></div>
+<div *ngIf="divArray">
+  <div *ngFor="let divElement of divArray; let i = index" class="i box" [style.top.px]="divElement.y" [style.left.px]="divElement.x"
+    [style.height.px]="divHeight" [style.width.px]="divWidth" [style.background-color]="divElement.color">
+    <p style="padding-left: 20%">
+      width: {{divWidth}}
+      <br> height: {{divHeight}}
+      <br> x: {{divElement.x}}
+      <br> y: {{divElement.y}}
+      {{divElement.color}}
+    </p>
+  </div>
 </div>

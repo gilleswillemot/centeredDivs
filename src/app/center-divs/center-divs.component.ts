@@ -55,7 +55,7 @@ export class CenterDivsComponent implements OnInit {
       this._divArray = this.centerDivs(this._numberOfDivs++)
     }, 1000);
 
-   // this._divArray = this.centerDivs(15);
+    // this._divArray = this.centerDivs(15);
 
     //this.drawDivs(divArray);
   } //END OF ngOnitInit
@@ -130,11 +130,11 @@ export class CenterDivsComponent implements OnInit {
       xCoordinate = this._origin.x - (this.divWidth / 2) - ((Math.floor(columns / 2) * this.divWidth));
     }
     for (let i = 0; i < columns; i++) {
-      let color2 = color;
+      let divColor = "";
       let mod = i % 2 == 0;
-      if (color == "blue" && mod) color2 = "lightblue";
-      else if (color == "green" && i % 2 == 0) color2 = "lightgreen";
-      divArray[index + i] = new DivElement(xCoordinate + (i * this.divWidth), yCoordinate, color2);
+      if (color == "blue") divColor = mod ? "lightblue" : color;
+      else divColor = mod ? "lightgreen" : color;
+      divArray[index + i] = new DivElement(xCoordinate + (i * this.divWidth), yCoordinate, divColor);
     }
   }
 

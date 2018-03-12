@@ -21,7 +21,6 @@ export class CenterDivsComponent implements OnInit {
   ngOnInit() {
     this.pageWidth = window.screen.width;
     this.pageHeight = window.screen.height;
-   this.maxNumberOfDivsPerRow = Math.floor(this.pageWidth / this._divWidth);
     this._origin = {
       x: innerWidth / 2,
       y: innerHeight / 2,
@@ -52,11 +51,12 @@ export class CenterDivsComponent implements OnInit {
     let interval = setInterval(() => {
       // let randomNumberOfDivsInCorrectRange = Math.floor(Math.random() * maxNumberOfDivsInbody);
       // this._numberOfDivs = Math.ceil(Math.random() * 14);
-      
+
       this._divArray = this.centerDivs(this._numberOfDivs++)
     }, 1000);
 
-    // this._divArray = this.centerDivs(15);
+   // this._divArray = this.centerDivs(15);
+
     //this.drawDivs(divArray);
   } //END OF ngOnitInit
 
@@ -65,7 +65,9 @@ export class CenterDivsComponent implements OnInit {
   // }
 
   get numberOfDivs() {
-    return this._numberOfDivs;
+    // return this._numberOfDivs;
+    return this._divArray.length;
+
   }
 
   get originX() {
@@ -101,7 +103,7 @@ export class CenterDivsComponent implements OnInit {
    */
   centerDivs(numberOfDivs: number): DivElement[] { //alle div in de juiste column en row plaatsen.
     let divArray = [];
-    
+    this.maxNumberOfDivsPerRow = Math.floor(this.pageWidth / this._divWidth);
     if (numberOfDivs > 3 && numberOfDivs < (2 * this.maxNumberOfDivsPerRow)) {//if you want to center a small number of divs properly
       this.maxNumberOfDivsPerRow = Math.floor(numberOfDivs / 2);
     }
@@ -110,7 +112,7 @@ export class CenterDivsComponent implements OnInit {
     let leftoverDivs: number = modulo == 0 ? this.maxNumberOfDivsPerRow : modulo;
     let yCoordinate: number = this._origin.y - numberOfRows / 2 * this._divHeight;
     for (let i = 0; i < numberOfRows; i++) {
-      let color = i % 2 == 0 ? "blue" : "red";
+      let color = i % 2 == 0 ? "blue" : "green";
       let remainingColumns: number = i + 1 == numberOfRows ? leftoverDivs : this.maxNumberOfDivsPerRow; //if last row, center the divs, else just normal row.
       this.centerRowOfDivs(yCoordinate, remainingColumns, divArray, color, i * this.maxNumberOfDivsPerRow);
       yCoordinate += this._divHeight;
@@ -128,16 +130,20 @@ export class CenterDivsComponent implements OnInit {
       xCoordinate = this._origin.x - (this.divWidth / 2) - ((Math.floor(columns / 2) * this.divWidth));
     }
     for (let i = 0; i < columns; i++) {
-      divArray[index + i] = new DivElement(xCoordinate + (i * this.divWidth), yCoordinate, color);
+      let color2 = color;
+      let mod = i % 2 == 0;
+      if (color == "blue" && mod) color2 = "lightblue";
+      else if (color == "green" && i % 2 == 0) color2 = "lightgreen";
+      divArray[index + i] = new DivElement(xCoordinate + (i * this.divWidth), yCoordinate, color2);
     }
   }
 
-  drawDivs(divArray: DivElement[]) {
-    // divArray.forEach(element => {
-    //   element.drawDivElement(document);
-    // });
-    let divElement: HTMLElement = document.createElement('div');
-    divElement.setAttribute("width", "300px");
-    divElement.style['color'] = 'red';
-  }
+  // drawDivs(divArray: DivElement[]) {
+  //   // divArray.forEach(element => {
+  //   //   element.drawDivElement(document);
+  //   // });
+  //   let divElement: HTMLElement = document.createElement('div');
+  //   divElement.setAttribute("width", "300px");
+  //   divElement.style['color'] = 'red';
+  // }
 }
